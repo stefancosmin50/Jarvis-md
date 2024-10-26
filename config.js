@@ -28,7 +28,7 @@ module.exports = {
   SETVV: process.env.SETVV || 'DM',
   ELEVENLABS: process.env.ELEVENLABS,
   HANDLERS: process.env.HANDLERS || process.env.HANDLER || process.env.PREFIX || '/',
-  ALLWAYS_ONLINE: toBool(process.env.ALLWAYS_ONLINE || "false"),
+  ALLWAYS_ONLINE: toBool(process.env.ALWAYS_ONLINE || process.env.ALLWAYS_ONLINE || "false"),
   READ_MSG: toBool(process.env.READ_MSG || "false"),
   BRANCH: "main",
   LINKPREVIEW: toBool(process.env.LINKPREVIEW || "false"),

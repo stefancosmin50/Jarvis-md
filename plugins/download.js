@@ -1,4 +1,4 @@
-const { System, isPrivate, extractUrlsFromText, sleep, getJson, config, isUrl, IronMan, getBuffer, toAudio } = require("../lib/");
+const { System, isPrivate, extractUrlsFromText, sleep, getJson, config, isUrl, IronMan, getBuffer, toAudio, instaDL } = require("../lib/");
 
 
 System({
@@ -73,7 +73,7 @@ System({
     if (!url) return await message.reply('Please provide an Instagram *url*'); 
     if (!isUrl(url)) return await message.reply("Please provide a valid Instagram *url*");
     if (!url.includes("instagram.com")) return await message.reply("*Please provide a valid Instagram url*");
-    const { result: data } = await getJson(api + "download/insta?url=" + url);
+    const data = await instaDL(url);
     if (!data || data.length === 0) return await message.reply("*No content found at the provided URL*");
     for (const imageUrl of data) {
         if (imageUrl) await message.sendFromUrl(imageUrl.url, { quoted: message.data });
@@ -97,7 +97,7 @@ System({
   }
   const url = (await extractUrlsFromText(match))[0];
   if (!url.includes("instagram.com")) return message.reply("_*Provide a valid Instagram story URL*_");
-  const { result } = await getJson(api + "download/insta?url=" + url);
+  const result = await instaDL(url);
   if (!result || result.length === 0) return await message.reply("*Exᴀᴍᴘʟᴇ: .story username*");
   if (result.length === 1) return await message.sendFromUrl(result[0].url);
   const options = result.map((u, index) => ({ name: "quick_reply", display_text: `${index + 1}/${result.length}`, id: `story dl-url ${u.url}` }));

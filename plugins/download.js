@@ -46,7 +46,7 @@ System({
     let match = (await extractUrlsFromText(text || message.reply_message.text))[0];
     if (!match) return await message.reply("*Need a Facebook public media link*\n_Example: .fb_ \n*NOTE: ONLY VIDEO LINK*");       
     const { result } = await getJson(api + "download/facebook?url=" + match);
-    await message.client.sendButton(message.jid, { image: result.thumbnail, buttons: [{ name: "quick_reply", display_text: `Hd video`, id: `sendurl ${result.hd}`}, {name: "quick_reply", display_text: `Sd video`, id: `sendurl ${result.sd}`}], body: "", footer: "*JARVIS-MD*", title: "\n*Title:* ```" + result.title + "```"+ "\n" });
+    await message.sendFromUrl(result.hd, { quoted: message.data });
 });
 
 System({
@@ -86,22 +86,23 @@ System({
   desc: "To download insta story",
   type: "download"
 }, async (message, match) => {
-  if (match.startsWith("dl-url")) return await message.sendFromUrl((await extractUrlsFromText(match))[0], { caption: "_Done 🫀_" });
   match = match || message.reply_message.text;
   if (!isUrl(match)) {
     const { media: result } = await getJson(IronMan("ironman/ig/story?user=" + match));
-    if (!result) return await message.send("Not Found");
-    if (result.length === 1) return await message.sendFromUrl(result[0]);
-    const options = result.map((u, index) => ({ name: "quick_reply", display_text: `${index + 1}/${result.length}`, id: `story dl-url ${u}` }));
-    return await message.client.sendButton(message.jid, { buttons: options, body: "", footer: "*JARVIS-MD*", title: "*Insta Media Downloader_*\n" });
+    if (!result) return await message.reply("*Exᴀᴍᴘʟᴇ: .story username/link*");
+    if (result.length === 1) return await message.sendFromUrl(result[0], { quoted: message.data });
+      for (const media of result) {
+      await message.sendFromUrl(media, { quoted: message.data });
+    }
+    return;
   }
   const url = (await extractUrlsFromText(match))[0];
   if (!url.includes("instagram.com")) return message.reply("_*Provide a valid Instagram story URL*_");
   const result = await instaDL(url);
-  if (!result || result.length === 0) return await message.reply("*Exᴀᴍᴘʟᴇ: .story username*");
-  if (result.length === 1) return await message.sendFromUrl(result[0].url);
-  const options = result.map((u, index) => ({ name: "quick_reply", display_text: `${index + 1}/${result.length}`, id: `story dl-url ${u.url}` }));
-  await message.client.sendButton(message.jid, { buttons: options, body: "", footer: "*JARVIS-MD*", title: "*Insta Media Downloader 💛*\n" });
+  if (!result || result.length === 0) return await message.reply("*Exᴀᴍᴘʟᴇ: .story username/link*");
+    for (const media of result) {
+    await message.sendFromUrl(media.url, { quoted: message.data });
+  }
 });
 
 System({

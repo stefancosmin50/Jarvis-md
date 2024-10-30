@@ -324,3 +324,15 @@ System({
     const caption = `*Title:* ${title}\n*Artist:* ${artist}\n\n${lyrics}`;
     await message.client.sendMessage(message.chat, { image: { url: image }, caption }, {quoted: message});
 });
+
+System({
+    pattern: 'telegram ?(.*)',
+    fromMe: isPrivate,
+    desc: 'telegram profile details',
+    type: 'search',
+}, async (message, match) => {
+    if (!match) return await message.reply("*Need a username*\n_Example: .telegram @TGMovies2Bot_");
+    const { result } = await getJson(api + "stalk/telegram?query=" + match)
+    return message.reply({ url: result.profile }, { caption: `*User name :* ${result.userName}\n*Nick name :* ${result.nickName}\n*About :* ${result.about}\n*Via telegram :* ${result.telegram}`}, "image")
+});
+
